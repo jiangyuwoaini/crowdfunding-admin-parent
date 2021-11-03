@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<!-- 加载外部属性文件 -->
+	<context:property-placeholder location="classpath:db.properties"/>
+	<!-- 自动扫描的包,会被扫描到spring容器中 -->
+	<context:component-scan base-package="com.lblz.crowd.*"/>
+	<!-- ===============================================配置数据源及mybatis-plus================================================================== -->
+	<!-- 数据源 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${jdbc.driver}"></property>
+		<property name="jdbcUrl" value="${jdbc.url}"></property>
+		<property name="user" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+	</bean>
+
+	<!--  配置SqlSessionFactoryBean 
+		Mybatis提供的: org.mybatis.spring.SqlSessionFactoryBean
+		MP提供的:com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean
+	 -->
+	<bean id="sqlSessionFactoryBean" class="com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean">
+		<!-- 装配数据源 -->
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 指定mybatis全局配置文件位置 -->
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+		<!-- 指定Mapper.xml配置文件的位置 -->
+		<property name="mapperLocations" value="classpath:./mybatis-plus/mapper/*.xml"/>
+<!--		 别名处理 -->
+		<property name="typeAliasesPackage" value="com.lblz.crowd.beans"></property>
+
+		<!--注册插件-->
+		<property name="plugins">
+			<array>
+				<!--注册分页插件-->
+				<bean class="com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor"></bean>
+			</array>
+		</property>
+
+		<!--把MP相关的全局配置注入到sqlSessionFactoryBean-->
+		<property name="globalConfig" ref="globalConfig"></property>
+	</bean>
+
+	<!--注册执行分析插件-->
+	<!-- 执行分析插件 只建议在开发环境中使用，不建议在生产环境使用 -->
+	<bean class="com.baomidou.mybatisplus.extension.plugins.SqlExplainInterceptor">
+		<property name="sqlParserList">
+			<list>
+				<!-- 禁止全表删除-->
+				<bean class="com.baomidou.mybatisplus.extension.parsers.BlockAttackSqlParser"></bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="configuration" class="com.baomidou.mybatisplus.core.MybatisConfiguration">
+		<property name="mapUnderscoreToCamelCase" value="true"></property>
+	</bean>
+
+	<!--注册乐观锁插件-->
+	<bean class="com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor"></bean>
+
+	<bean id="globalConfig" class="com.baomidou.mybatisplus.core.config.GlobalConfig">
+		<property name="dbConfig" ref="dbConfig"></property>
+		<!--自定义公共字段填充-->
+		<property name="metaObjectHandler" ref="mybatisPlusMetaObjectHandler"></property>
+	</bean>
+
+	<!--注入自定义公共字段填充-->
+	<bean id="mybatisPlusMetaObjectHandler" class="com.lblz.crowd.mvc.config.MybatisPlusMetaObjectHandler"></bean>
+
+	<bean id="dbConfig" class="com.baomidou.mybatisplus.core.config.GlobalConfig$DbConfig">
+
+	</bean>
+	<!-- 配置MapperScannerConfigurer 扫描mapper接口的路径 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.lblz.crowd.mapper"></property>
+	</bean>
+
+	<!-- ===============================================配置事务================================================================== -->
+	<!-- 配置事务管理器 -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!-- 装配数据源 -->
+		<property name="dataSource" ref="dataSource"/>
+
+	</bean>
+
+	<!-- 基于注解的事务管理 -->
+	<!--<tx:annotation-driven transaction-manager="txManager"/>-->
+
+	<!-- 配置事务切面 -->
+	<aop:config>
+		<!-- 考虑到后面我们整合SpringSecurity，避免把UserDetailsService加入事务控制，让切入点表达式定位到ServiceImpl -->
+		<aop:pointcut expression="execution(* *..*ServiceImpl.*(..))" id="txPointcut"/>
+<!--		<aop:pointcut expression="execution(* com.lblz.crowd.mapper.*Mapper.*(..))" id="txPointcut"/>-->
+		<!-- 将切入点表达式和事务通知关联起来 -->
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+	</aop:config>
+
+	<!-- 配置事务通知 -->
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<!-- 配置事务属性 -->
+		<tx:attributes>
+			<!-- 查询方法：配置只读属性，让数据库知道这是一个查询操作，能够进行一定优化 -->
+			<tx:method name="get*" read-only="true"/>
+			<tx:method name="find*" read-only="true"/>
+			<tx:method name="query*" read-only="true"/>
+			<tx:method name="count*" read-only="true"/>
+			<!-- 增删改方法：配置事务传播行为、回滚异常 -->
+			<!--
+				propagation属性：
+					REQUIRED：默认值，表示当前方法必须工作在事务中，如果当前线程上没有已经开启的事务，则自己开新事务。如果已经有了，那么就使用这个已有的事务。
+						顾虑：用别人的事务有可能“被”回滚。
+					REQUIRES_NEW：建议使用的值，表示不管当前线程上有没有事务，都要自己开事务，在自己的事务中运行。
+						好处：不会受到其他事务回滚的影响。
+			 -->
+			<!--
+				rollback-for属性：配置事务方法针对什么样的异常回滚
+					默认：运行时异常回滚
+					建议：编译时异常和运行时异常都回滚
+			 -->
+			<tx:method name="save*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+			<tx:method name="update*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+			<tx:method name="remove*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+			<tx:method name="batch*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+
+		</tx:attributes>
+
+	</tx:advice>
+</beans>
