@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 //public class GeneralProperty<T extends Model> extends Model<T> implements Serializable {
 public class GeneralProperty implements Serializable {
     /**
-     *
+     * id
      */
     @TableId(type = IdType.AUTO)
     private Long id;

@@ -3,6 +3,7 @@ package com.lblz.crowd.mvc.config;
 import com.google.gson.Gson;
 
 import com.lblz.crowd.exception.LoginFailedException;
+import com.lblz.crowd.response.ConstantMessage;
 import com.lblz.crowd.response.ResultEntity;
 import com.lblz.crowd.utils.JudgeRequestTypeUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -84,7 +85,7 @@ public class ExceptionResolver {
         }
         //如果不是ajax请求则返回modelAndView
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("exception",exception);
+        modelAndView.addObject(ConstantMessage.MESSAGE_KEY,exception.getMessage());//返回的消息信息
         modelAndView.setViewName(viewName); //设置指定视图
         return modelAndView;
     }

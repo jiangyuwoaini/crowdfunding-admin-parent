@@ -2,11 +2,14 @@ package com.lblz.crowd.mvc.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lblz.crowd.beans.Admin;
+import com.lblz.crowd.beans.PageInfoResult;
+import com.lblz.crowd.response.ResultEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * <p>
@@ -30,4 +33,15 @@ public interface IAdminService extends IService<Admin> {
      */
     boolean LoginAdmin(String loginAcct, String password,
                        HttpServletRequest request, ModelMap modelMap);
+
+    /**
+     *<p>
+     *     分页返回admin列表数据
+     *</p>
+     * @param admin 查询条件
+     * @param page 分页条件
+     * @param request
+     * @return
+     */
+    ResultEntity<List<Admin>> listPage(Admin admin, PageInfoResult page, HttpServletRequest request);
 }

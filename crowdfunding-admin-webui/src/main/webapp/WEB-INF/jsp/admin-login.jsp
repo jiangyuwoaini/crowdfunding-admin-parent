@@ -27,7 +27,7 @@
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <div><a class="navbar-brand" href="index.html" style="font-size:32px;">羲筹网-创意产品众筹平台</a></div>
+            <div><a class="navbar-brand" href="/admin/to/login.html" style="font-size:32px;">羲筹网-创意产品众筹平台</a></div>
         </div>
     </div>
 </nav>
@@ -35,7 +35,7 @@
 <div class="container">
     <form action="admin/login.html" method="post" id="adminLogin" class="form-signin" role="form">
         <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 管理员登录</h2>
-        <p id="msg">${message}</p>
+        <p id="msg">${MESSAGE}</p>
         <div class="form-group has-success has-feedback">
             <input type="text" id="loginAcct" name="loginAcct" class="form-control" id="inputSuccess4" placeholder="请输入登录账号" autofocus>
             <span class="glyphicon glyphicon-user form-control-feedback"></span>

@@ -34,4 +34,18 @@
 	<!-- 配置view_controller 直接把请求地址和视图关联起来,不必写handler方法了 -->
 	<mvc:view-controller path="/admin/to/login.html" view-name="admin-login" />
 	<mvc:view-controller path="/admin/to/main.html" view-name="admin-main" />
+
+	<!-- 注册拦截器配置 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!-- mvc:mapping 需要被拦截的路径 /*对应一层目录 如/a /b
+			 							  /**对应多层目录 如/aaa /aaaa-->
+			<mvc:mapping path="/**"/>
+			<!-- -->
+			<mvc:exclude-mapping path="/admin/to/login.html"/>
+			<mvc:exclude-mapping path="/admin/login.html"/>
+			<!-- <mvc:exclude-mapping path="/admin/logout.html"/> -->
+			<bean class="com.lblz.crowd.mvc.interceptor.LoginInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
 </beans>

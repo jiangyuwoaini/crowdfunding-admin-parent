@@ -9,4 +9,8 @@ public class ConstantMessage {
     public static final String USER_PASSWORD_ERROR = "用户名或者密码错误,请重新输入！";
     public static final String PASSWORD_ERROR = "密码错误,请重新输入！";
     public static final String USER_PASSWORD_NULL_ERROR = "用户名和密码不能为空,请重新输入！";
+    public static final String ADMIN_USER_KEY = "ADMIN_USER";
+    public static final String MESSAGE_KEY = "MESSAGE";
+    public static final String SESSION_EXPIRES = "session失效,请重新登陆!";
+
 }

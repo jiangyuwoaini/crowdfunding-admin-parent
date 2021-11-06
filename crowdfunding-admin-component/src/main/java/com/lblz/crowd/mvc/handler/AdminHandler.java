@@ -1,6 +1,9 @@
 package com.lblz.crowd.mvc.handler;
 
+import com.lblz.crowd.beans.Admin;
+import com.lblz.crowd.beans.PageInfoResult;
 import com.lblz.crowd.mvc.service.IAdminService;
+import com.lblz.crowd.response.ResultEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author lblz
@@ -36,5 +40,17 @@ public class AdminHandler {
         }
     }
 
+    @RequestMapping("logout.html")
+    public String logout(HttpServletRequest request) {
+        request.getSession().invalidate(); //解除当前所有session
+        return "admin-login";
+    }
+
+    @RequestMapping("/listPage.html")
+    public String listPage(Admin admin, PageInfoResult page, HttpServletRequest request,ModelMap modelMap) {
+            ResultEntity<List<Admin>> listResultEntity = adminService.listPage(admin, page, request);
+        modelMap.addAttribute("listResultEntity",listResultEntity);
+        return "admin-page";
+    }
 
 }

@@ -11,7 +11,10 @@ import java.util.Objects;
 public class JudgeRequestTypeUtils {
 
     /**
-     * 判断是否是ajax
+     * <p>
+     *     判断是否是ajax true:真 | false:假
+     * </p>
+     * @param request
      * @return
      */
     public static Boolean checkRequestAjax(HttpServletRequest request) {
