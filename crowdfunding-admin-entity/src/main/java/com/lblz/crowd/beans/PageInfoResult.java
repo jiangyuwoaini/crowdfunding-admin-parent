@@ -20,9 +20,9 @@ public class PageInfoResult{
     private Integer pageCount;
 
     /**
-     * 剩余页数
+     * 总页数量
      */
-    private Integer remainingPage;
+    private Integer countPage;
 
     /**
      * 列表总数据
@@ -51,12 +51,12 @@ public class PageInfoResult{
         this.pageCount = pageCount;
     }
 
-    public Integer getRemainingPage() {
-        return remainingPage;
+    public Integer getCountPage() {
+        return countPage;
     }
 
-    public void setRemainingPage(Integer remainingPage) {
-        this.remainingPage = remainingPage;
+    public void setCountPage(Integer countPage) {
+        this.countPage = countPage;
     }
 
     public Integer getSize() {

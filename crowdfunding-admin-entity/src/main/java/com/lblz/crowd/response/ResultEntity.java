@@ -53,29 +53,17 @@ public class ResultEntity<T> implements Serializable {
         page.setSize(lists.size());
         int size = lists.size();
         //(1,总页数 = 总数据 /每页数) || (1,剩余页数 = 总数据 / 每页数 -当前页) (2,剩余页数 = 总数据 -(当前页 * 每页页数) /每页页数)
-        if(size > page.getCurrentPage() * page.getPageCount()){//如果剩余数量不到一页直接赋值1
-            size = size - page.getPageCount() * page.getCurrentPage(); //剩余数量
-            int remainingPage = size / page.getPageCount(); //剩余页数
-            if(size % page.getPageCount() == 0){ //求剩余页数
-                page.setRemainingPage(remainingPage);//总页数
-            }else{
-                page.setRemainingPage(remainingPage + 1);//总页数 -
-            }
-        }
-        else {
-            page.setRemainingPage(0);//总页数 -
-        }
-        //因为索引是从0开始的,所以不用(page.getCurrentPage()-1)+1 不用加1,当值为第二页时第一条数据是索引为10 实际是11的数据
-        if(lists.size() < page.getPageCount()) {//如果一页数量大于集合中数据的话 则就把所有数据都展示出去
-            page.setRemainingPage(0);
-            lists = lists.subList(0, lists.size());
+        //如果剩余数量不到一页直接赋值1
+        int countPage = size / page.getPageCount();
+        if(size % page.getPageCount() == 0){ //求总页数
+            page.setCountPage(countPage);
         }else{
-            if(page.getPageCount() * page.getCurrentPage() > lists.size()){
-                lists = lists.subList(page.getPageCount() * (page.getCurrentPage()-1) ,lists.size());
-            }else{
-                lists = lists.subList(page.getPageCount() * (page.getCurrentPage()-1) ,page.getPageCount() * page.getCurrentPage());
-            }
-
+            page.setCountPage(countPage + 1);
+        }
+        if(page.getPageCount() * page.getCurrentPage() > size){ //如果当前页 * 每页最大数量 大于总集合
+            lists = lists.subList(page.getPageCount() * (page.getCurrentPage()-1) ,lists.size());
+        }else{
+            lists = lists.subList(page.getPageCount() * (page.getCurrentPage()-1) ,page.getPageCount() * page.getCurrentPage());
         }
         return new ResultEntity<T>((T)lists,CodeEnum.SUCCESS.getCode(),CodeEnum.SUCCESS.getMessage(),page);
     }

@@ -18,9 +18,8 @@
                 <div class="panel-body">
                     <form action="/admin/listPage.html" method="post" class="form-inline" id="admin-form" role="form" style="float:left;">
                         <input type="hidden" name="currentPage" id="currentPage" value="${listResultEntity.page.currentPage}">
-                        <input type="hidden" name="remainingPage" id="remainingPage" value="${listResultEntity.page.remainingPage}">
+                        <input type="hidden" name="countPage" id="countPage" value="${listResultEntity.page.countPage}">
                         <input type="hidden" name="pageCount" id="pageCount" value="${listResultEntity.page.pageCount}">
-                        ${listResultEntity.page.remainingPage}
                         <div class="form-group has-feedback">
                             <div class="input-group">
                                 <div class="input-group-addon">查询条件</div>
@@ -87,7 +86,7 @@
                                             <a href="javascript:void(0);" onclick="listPage('',true)">跳至</a>
                                         </li>
                                         <li><a href="javascript:void(0);" onclick="listPage(1,true)">下一页</a></li>
-                                        <li><a>剩余页数: ${listResultEntity.page.remainingPage}</a></li>
+                                        <li><a>总页数: ${listResultEntity.page.countPage}</a></li>
                                     </ul>
                                 </td>
                             </tr>
@@ -133,22 +132,22 @@
         let toPage = $("#toPage");
         let currentPage = $("#currentPage");
         let pageCount = $("#pageCount");
-        let remainingPage = $("#remainingPage");
+        let countPage = $("#countPage");
         if(value =="") { //如果value值为空 则获取跳转页
             if (isNaN(parseInt(toPage.val()))){ //判断输入的是否是有效字符 并且不能大于剩余页数
                 layer.msg("页数不是整数！")
                 return false;
-            }else if(parseInt(toPage.val()) > parseInt(remainingPage.val()) + parseInt(currentPage.val())){
-                layer.msg("不能大于剩余页数！")
+            }else if(parseInt(toPage.val()) > parseInt(countPage.val())){
+                layer.msg("不能大于总页数！")//跳转页数不能大于总页数
                 return false;
             }
             currentPage.val(toPage.val());
         }else if(flag){
-            if(value == -1 && parseInt(currentPage.val()) == 1){
+            if(value == -1 && parseInt(currentPage.val()) == 1){ //页数为1的时候不能再上一页
                 layer.msg("已到最低页数！");
                 return false;
             }
-            if(value == 1 && parseInt(remainingPage.val()) ==0){
+            if(value == 1 && parseInt(currentPage.val()) == parseInt(countPage.val())){ //当前页 == 总页数不能再下一页
                 layer.msg("已到最高页数！");
                 return false;
             }
