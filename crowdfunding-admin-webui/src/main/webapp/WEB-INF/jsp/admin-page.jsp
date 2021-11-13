@@ -4,6 +4,16 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <%@include file="include-head.jsp" %>
+<style>
+    .banner{
+        width: 150px;
+        height: 25px;
+        /* position: absolute; */
+        margin:0 auto;
+        border:none;
+        border-radius: 10px;
+    }
+</style>
 <body>
 <%@include file="include-nav.jsp" %>
 <div class="container-fluid">
@@ -16,20 +26,23 @@
                     <h3 class="panel-title"><i class="glyphicon glyphicon-th"></i> 数据列表</h3>
                 </div>
                 <div class="panel-body">
-                    <form action="/admin/listPage.html" method="post" class="form-inline" id="admin-form" role="form" style="float:left;">
+                    <form action="admin/listPage.html" method="post" class="form-inline" id="admin-form" role="form" style="float:left;">
                         <input type="hidden" name="currentPage" id="currentPage" value="${listResultEntity.page.currentPage}">
                         <input type="hidden" name="countPage" id="countPage" value="${listResultEntity.page.countPage}">
                         <input type="hidden" name="pageCount" id="pageCount" value="${listResultEntity.page.pageCount}">
                         <div class="form-group has-feedback">
                             <div class="input-group">
                                 <div class="input-group-addon">查询条件</div>
-                                <input class="form-control has-success" type="text" placeholder="请输入查询条件">
+                                <input class="form-control has-success" name="realName" type="text" value="${param.realName}" placeholder="请输入查询条件">
                             </div>
                         </div>
-                        <button type="button" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
+                        <button type="submit" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
                     </form>
+                    <div class="banner">
+                        <span style="color:red;font-size: 15px;font-weight: 700;padding-left: 50px;">${MESSAGE}</span>
+                    </div>
                     <button type="button" class="btn btn-danger" style="float:right;margin-left:10px;"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
-                    <button type="button" class="btn btn-primary" style="float:right;" onclick="window.location.href='add.html'"><i class="glyphicon glyphicon-plus"></i> 新增</button>
+                    <a href="/admin/to/add.html" class="btn btn-primary" style="float:right;"><i class="glyphicon glyphicon-plus"></i> 新增</a>
                     <br>
                     <hr style="clear:both;">
                     <div class="table-responsive">
@@ -54,8 +67,8 @@
                                 <td>${data.email}</td>
                                 <td>
                                     <button type="button" class="btn btn-success btn-xs"><i class=" glyphicon glyphicon-check"></i></button>
-                                    <button type="button" class="btn btn-primary btn-xs"><i class=" glyphicon glyphicon-pencil"></i></button>
-                                    <button type="button" class="btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove"></i></button>
+                                    <button type="button" class="btn btn-primary btn-xs"><a class=" glyphicon glyphicon-pencil" style="color:white;text-decoration: none;" href="/admin/edit.html?id=${data.id}&realName=${param.realName}"></a></button>
+                                    <button type="button" class="btn btn-danger btn-xs"><a class=" glyphicon glyphicon-remove" style="color:white;text-decoration: none;" href="/admin/remove.html?id=${data.id}&realName=${param.realName}"></a></button>
                                 </td>
                             </tr>
                             </c:forEach>

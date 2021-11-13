@@ -33,7 +33,7 @@
 </nav>
 
 <div class="container">
-    <form action="admin/login.html" method="post" id="adminLogin" class="form-signin" role="form">
+    <form action="/admin/login.html" method="post" id="adminLogin" class="form-signin" role="form">
         <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 管理员登录</h2>
         <p id="msg">${MESSAGE}</p>
         <div class="form-group has-success has-feedback">

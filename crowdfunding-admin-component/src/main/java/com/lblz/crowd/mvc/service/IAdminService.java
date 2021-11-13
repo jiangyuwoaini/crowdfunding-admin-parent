@@ -44,4 +44,58 @@ public interface IAdminService extends IService<Admin> {
      * @return
      */
     ResultEntity<List<Admin>> listPage(Admin admin, PageInfoResult page, HttpServletRequest request);
+
+    /**
+     * <p>
+     *     根据id进行删除
+     * </p>
+     * @param id id值
+     * @param request request域
+     * @param modelMap 模型
+     * @return
+     */
+    Boolean remove(Long id, HttpServletRequest request, ModelMap modelMap);
+
+    /**
+     * <p>
+     *     添加管理员数据
+     * </p>
+     * @param admin admin管理员
+     * @param request request域
+     * @param modelMap 模型
+     * @return
+     */
+    void insert(Admin admin, HttpServletRequest request, ModelMap modelMap);
+
+    /**
+     * <p>
+     *     注册校验
+     * </p>
+     * @param admin
+     * @param request
+     * @param modelMap
+     * @return
+     */
+    ResultEntity<String> check(Admin admin, HttpServletRequest request, ModelMap modelMap);
+
+    /**
+     * <p>
+     *     根据id获取管理员
+     * </p>
+     * @param id
+     * @param request
+     * @param modelMap
+     * @return
+     */
+    Admin getById(Long id, HttpServletRequest request, ModelMap modelMap);
+
+    /**
+     * <p>
+     *     根据用户id修改管理员信息
+     * </p>
+     * @param admin
+     * @param request
+     * @param modelMap
+     */
+    void modify(Admin admin, HttpServletRequest request, ModelMap modelMap);
 }

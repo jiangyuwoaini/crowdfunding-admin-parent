@@ -7,6 +7,8 @@ import javax.crypto.spec.DESedeKeySpec;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
+import java.util.Objects;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
@@ -194,40 +196,13 @@ public class EndecryptUtils {
      * @return String 3-DES加密后的String
      */
     public static String get3DESEncrypt(String src, String spkey) {
-
+        if(Objects.isNull(spkey)) {
+            spkey = EndecryptUtils.key;
+        }
         String requestValue = "";
         try {
             // 得到3-DES的密钥匙
             byte[] enKey = getEnKey(spkey);
-            // 要进行3-DES加密的内容在进行/"UTF-16LE/"取字节
-            byte[] src2 = src.getBytes("UTF-16LE");
-            // 进行3-DES加密后的内容的字节
-            byte[] encryptedData = Encrypt(src2, enKey);
-            // 进行3-DES加密后的内容进行BASE64编码
-            String base64String = getBase64Encode(encryptedData);
-            // BASE64编码去除换行符后
-            String base64Encrypt = filter(base64String);
-            // 对BASE64编码中的HTML控制码进行转义的过程
-            requestValue = getURLEncode(base64Encrypt);
-            // System.out.println(requestValue);
-        } catch (Exception e) {
-            logger.error(e.getMessage(),e);
-            return null;
-        }
-        return requestValue;
-    }
-
-    /**
-     * 3-DES加密
-     * @param src 要进行3-DES加密的String
-     * @return String 3-DES加密后的String
-     */
-    public static String get3DESEncrypt(String src) {
-
-        String requestValue = "";
-        try {
-            // 得到3-DES的密钥匙
-            byte[] enKey = getEnKey(EndecryptUtils.key);
             // 要进行3-DES加密的内容在进行/"UTF-16LE/"取字节
             byte[] src2 = src.getBytes("UTF-16LE");
             // 进行3-DES加密后的内容的字节
@@ -272,6 +247,9 @@ public class EndecryptUtils {
     public static String deCrypt(byte[] debase64, String spKey) {
         String strDe = null;
         Cipher cipher = null;
+        if(Objects.isNull(spKey)){
+            spKey = EndecryptUtils.key;
+        }
         try {
             cipher = Cipher.getInstance("DESede");
             byte[] key = getEnKey(spKey);
@@ -298,6 +276,9 @@ public class EndecryptUtils {
 
     public static String get3DESDecrypt(String src, String spkey) {
         String requestValue = "";
+        if(Objects.isNull(spkey)){
+            spkey = EndecryptUtils.key;
+        }
         try {
             // 得到3-DES的密钥匙
             // URLDecoder.decodeTML控制码进行转义的过程
@@ -328,7 +309,8 @@ public class EndecryptUtils {
 //        String get3desDecrypt = EndecryptUtils.get3DESEncrypt("abc123456", EndecryptUtils.key);
 //        System.out.println(get3desDecrypt);
 //        System.out.println(EndecryptUtils.getMd5("abc123456"));
-        System.out.println(EndecryptUtils.get3DESEncrypt("1"));
+        System.out.println(EndecryptUtils.get3DESEncrypt("123456789",null));
+        System.out.println(EndecryptUtils.get3DESDecrypt("Z04%2Bf8S6ob84Z%2F49ocoOh8LYli%2BGbdDi",null));
     }
 
 }

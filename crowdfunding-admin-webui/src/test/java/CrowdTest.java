@@ -39,7 +39,7 @@ public class CrowdTest {
     public void test() throws SQLException {
         Connection connection = dataSource.getConnection();
         Admin admin = new Admin();
-        admin.setPassword(EndecryptUtils.get3DESEncrypt("1"));
+        admin.setPassword(EndecryptUtils.get3DESEncrypt("1",null));
         adminMapper.insert(admin);
         System.out.println("???啊哈"+connection);
     }
